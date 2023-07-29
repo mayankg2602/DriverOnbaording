@@ -1,0 +1,45 @@
+server:
+  type: simple
+  applicationContextPath: /
+  adminContextPath: /admin
+  requestLog:
+    type: external
+  rootPath: /
+
+logging:
+  level: INFO
+  loggers:
+    org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: "OFF"
+    org.example: "INFO"
+  appenders:
+    - type: file
+      threshold: ALL
+      archive: true
+      currentLogFilename: \var\log\driverOnBoarding\service.log
+      archivedLogFilenamePattern: \var\log\driverOnBoarding\service-%i.log.gz
+      archivedFileCount: 4
+      timeZone: Asia/Kolkata
+      maxFileSize: 500MB
+
+database:
+  driverClass: com.mysql.cj.jdbc.Driver
+  user: root
+  password: 12345678
+  url: jdbc:mysql://localhost:3306/local?autoReconnect=true
+
+  properties:
+    charSet: UTF-8
+    hibernate.hbm2ddl.auto: update
+    hibernate.generate_statistics: true
+    hibernate.c3p0.min_size: 2
+    hibernate.c3p0.max_size: 2
+    hibernate.jdbc.fetch_size: 50
+
+  maxWaitForConnection: 30s
+  validationQuery: "SELECT 1"
+  initialSize: 2
+  minSize: 2
+  maxSize: 2
+  minIdleTime: 60s
+  checkConnectionWhileIdle: true
+  validationInterval: 30s
