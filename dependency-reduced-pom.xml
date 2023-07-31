@@ -9,30 +9,41 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.sonarsource.scanner.maven</groupId>
-        <artifactId>sonar-maven-plugin</artifactId>
-        <version>3.9.1.2184</version>
-      </plugin>
-      <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>${maven.compiler.plugin.version}</version>
+        <version>3.2</version>
         <configuration>
-          <source>${maven.compiler.source}</source>
-          <target>${maven.compiler.target}</target>
+          <source>1.8</source>
+          <target>1.8</target>
         </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>${maven.surefire.plugin.version}</version>
+        <version>2.12.2</version>
+        <executions>
+          <execution>
+            <id>default-test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <argLine>${surefireArgLine}</argLine>
+            </configuration>
+          </execution>
+        </executions>
         <configuration>
-          <testFailureIgnore>false</testFailureIgnore>
+          <parallel>all</parallel>
+          <threadCount>10</threadCount>
+          <perCoreThreadCount>true</perCoreThreadCount>
         </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>${maven.failsafe.plugin.version}</version>
+        <version>2.19</version>
         <executions>
           <execution>
+            <id>failsafe-integration-tests</id>
+            <phase>integration-test</phase>
             <goals>
               <goal>integration-test</goal>
               <goal>verify</goal>
@@ -46,31 +57,60 @@
         </configuration>
       </plugin>
       <plugin>
+        <groupId>com.iluwatar.urm</groupId>
+        <artifactId>urm-maven-plugin</artifactId>
+        <version>1.4.8</version>
+        <executions>
+          <execution>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>map</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <outputDirectory>${project.basedir}/target</outputDirectory>
+          <packages>
+            <param>org.example</param>
+          </packages>
+          <ignores />
+          <includeMainDirectory>true</includeMainDirectory>
+          <includeTestDirectory>false</includeTestDirectory>
+          <presenter>graphviz</presenter>
+        </configuration>
+      </plugin>
+      <plugin>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>${maven.shade.plugin.version}</version>
+        <version>2.3</version>
         <executions>
           <execution>
             <phase>package</phase>
             <goals>
               <goal>shade</goal>
             </goals>
+            <configuration>
+              <transformers>
+                <transformer />
+                <transformer>
+                  <mainClass>${main.class}</mainClass>
+                </transformer>
+              </transformers>
+            </configuration>
           </execution>
         </executions>
         <configuration>
           <createDependencyReducedPom>true</createDependencyReducedPom>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>${maven.jar.plugin.version}</version>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.6.0</version>
-        <configuration>
-          <classpathScope>test</classpathScope>
-          <mainClass>${main.class}</mainClass>
+          <filters>
+            <filter>
+              <artifact>*:*</artifact>
+              <excludes>
+                <exclude>META-INF/*.SF</exclude>
+                <exclude>META-INF/*.DSA</exclude>
+                <exclude>META-INF/*.RSA</exclude>
+                <exclude>org.apache.httpcomponents:httpcore:jar:4.1.1</exclude>
+              </excludes>
+            </filter>
+          </filters>
         </configuration>
       </plugin>
     </plugins>
@@ -79,7 +119,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13.2</version>
+      <version>4.11</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
@@ -89,83 +129,105 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.jacoco</groupId>
-      <artifactId>org.jacoco.agent</artifactId>
-      <version>0.8.7</version>
-      <classifier>runtime</classifier>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>1.18.20</version>
+      <version>1.18.8</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <version>3.3.3</version>
+      <groupId>org.glassfish.jersey.core</groupId>
+      <artifactId>jersey-server</artifactId>
+      <version>2.34</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
-          <artifactId>byte-buddy-agent</artifactId>
-          <groupId>net.bytebuddy</groupId>
+          <artifactId>jakarta.validation-api</artifactId>
+          <groupId>jakarta.validation</groupId>
         </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.containers</groupId>
+      <artifactId>jersey-container-servlet-core</artifactId>
+      <version>2.34</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <version>1.10.19</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-core</artifactId>
+      <version>1.6.4</version>
+      <scope>test</scope>
+      <exclusions>
         <exclusion>
-          <artifactId>objenesis</artifactId>
-          <groupId>org.objenesis</groupId>
+          <artifactId>powermock-reflect</artifactId>
+          <groupId>org.powermock</groupId>
         </exclusion>
       </exclusions>
     </dependency>
     <dependency>
       <groupId>org.powermock</groupId>
-      <artifactId>powermock-api-mockito2</artifactId>
-      <version>2.0.9</version>
+      <artifactId>powermock-api-mockito</artifactId>
+      <version>1.6.4</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
+          <artifactId>mockito-core</artifactId>
+          <groupId>org.mockito</groupId>
+        </exclusion>
+        <exclusion>
           <artifactId>powermock-api-support</artifactId>
+          <groupId>org.powermock</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>hamcrest-core</artifactId>
+          <groupId>org.hamcrest</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-module-junit4</artifactId>
+      <version>1.6.4</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>powermock-module-junit4-common</artifactId>
           <groupId>org.powermock</groupId>
         </exclusion>
       </exclusions>
     </dependency>
   </dependencies>
   <properties>
-    <guice.version>4.2.3</guice.version>
-    <jersey.version>2.34</jersey.version>
-    <maven.exec.plugin.version>1.6.0</maven.exec.plugin.version>
-    <jetty.version>9.4.43.v20210629</jetty.version>
-    <mysql-connector-java.version>8.0.26</mysql-connector-java.version>
-    <jackson.version>2.11.4</jackson.version>
-    <maven.shade.plugin.version>3.2.4</maven.shade.plugin.version>
-    <maven.install.plugin.version>2.5.2</maven.install.plugin.version>
-    <httpclient.version>4.5.13</httpclient.version>
-    <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-    <slf4j.version>1.7.30</slf4j.version>
-    <sonar.jacoco.reportPaths>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPaths>
-    <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <powermock.version>2.0.9</powermock.version>
-    <log4j.version>2.13.3</log4j.version>
-    <junit.version>4.13.2</junit.version>
-    <maven.site.plugin.version>3.9.1</maven.site.plugin.version>
-    <hibernate.version>5.4.32.Final</hibernate.version>
-    <maven.failsafe.plugin.version>2.22.2</maven.failsafe.plugin.version>
-    <maven.deploy.plugin.version>2.8.2</maven.deploy.plugin.version>
-    <sonar.language>java</sonar.language>
-    <main.class>org.example.App</main.class>
     <dropwizard.version>1.3.21</dropwizard.version>
-    <java.version>1.8</java.version>
+    <slf4j-api.version>1.7.5</slf4j-api.version>
+    <hibernate.version>5.2.18.Final</hibernate.version>
+    <guice.version>4.2.0</guice.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <sonar.jacoco.reportPaths>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPaths>
     <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.jar.plugin.version>3.2.0</maven.jar.plugin.version>
-    <maven.clean.plugin.version>3.1.0</maven.clean.plugin.version>
-    <mockito.version>3.3.3</mockito.version>
-    <jacoco.version>0.8.7</jacoco.version>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-    <lombok.version>1.18.20</lombok.version>
+    <junit.version>4.11</junit.version>
+    <httpclient.version>4.5.6</httpclient.version>
+    <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+    <main.class>org.example.App</main.class>
+    <sonar.language>java</sonar.language>
+    <java.version>1.8</java.version>
+    <mockito-all.version>1.10.19</mockito-all.version>
+    <powermock.version>1.6.4</powermock.version>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
-    <maven.project.info.reports.plugin.version>3.1.2</maven.project.info.reports.plugin.version>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <jetty.version>9.4.18.v20190429</jetty.version>
+    <skipTests>false</skipTests>
+    <jackson.version>2.9.10</jackson.version>
+    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+    <jacoco.version>0.7.7.201606060606</jacoco.version>
+    <jersey.version>2.25.1</jersey.version>
+    <log4j.version>2.17.0</log4j.version>
   </properties>
 </project>
+

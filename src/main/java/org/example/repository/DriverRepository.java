@@ -5,15 +5,17 @@ import org.example.dataModel.DriverEntity;
 import org.example.repository.interfaces.IDriverRepository;
 import org.hibernate.SessionFactory;
 
-public class DriverRepository extends AbstractDAO<DriverEntity> implements IDriverRepository {
+import java.util.Optional;
 
+public class DriverRepository extends AbstractDAO<DriverEntity> implements IDriverRepository {
     public DriverRepository(SessionFactory sessionFactory) {
         super(sessionFactory);
     }
 
     /**
-     * @param driver
-     * @return
+     * Save a DriverEntity to the database.
+     * @param driver The DriverEntity to be saved.
+     * @return The saved DriverEntity.
      */
     @Override
     public DriverEntity save(DriverEntity driver) {
@@ -21,11 +23,12 @@ public class DriverRepository extends AbstractDAO<DriverEntity> implements IDriv
     }
 
     /**
-     * @param driverId
-     * @return
+     * Find a DriverEntity by its ID.
+     * @param driverId ID of the DriverEntity to find.
+     * @return An Optional with the DriverEntity if found, empty otherwise.
      */
     @Override
-    public DriverEntity findById(Long driverId) {
-        return get(driverId);
+    public Optional<DriverEntity> findById(Long driverId) {
+        return Optional.ofNullable(get(driverId));
     }
 }

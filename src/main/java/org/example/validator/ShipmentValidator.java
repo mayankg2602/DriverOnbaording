@@ -6,45 +6,36 @@ import org.example.model.request.ShipmentCreationRequest;
 import org.example.validator.interfaces.IShipmentValidator;
 
 public class ShipmentValidator implements IShipmentValidator {
-    /**
-     * @param driverId
-     * @return
-     */
-    @Override
-    public Long validateDriverId(Long driverId) {
-        if (driverId == null) {
-            throw new ShipmentException("driver Id is null");
-        }
-        return driverId;
-    }
 
     /**
-     * @param trackingNumber
-     * @return
+     * This method validates the tracking number.
+     * @param trackingNumber the tracking number to validate
+     * @return The validated tracking number
+     * @throws ShipmentException if the tracking number is null or empty
      */
     @Override
-    public String validateTrackingNumber(String trackingNumber) {
+    public String validateTrackingNumber(String trackingNumber) throws ShipmentException {
         if (StringUtils.isBlank(trackingNumber)) {
-            throw new ShipmentException("invalid tracking number: " + trackingNumber);
+            throw new ShipmentException("Invalid tracking number: " + trackingNumber);
         }
         return trackingNumber;
     }
 
     /**
-     * @param shipmentRequest
-     * @return
+     * This method validates the ShipmentCreationRequest object.
+     * @param shipmentRequest the ShipmentCreationRequest object to validate
+     * @return The validated ShipmentCreationRequest object
+     * @throws ShipmentException if the shipment type is missing or the tracking number is not provided
      */
     @Override
-    public ShipmentCreationRequest validateRequest(ShipmentCreationRequest shipmentRequest) {
+    public ShipmentCreationRequest validateRequest(ShipmentCreationRequest shipmentRequest) throws ShipmentException {
         if (shipmentRequest.getShipmentType() == null) {
-            throw new ShipmentException("shipment type not present");
+            throw new ShipmentException("Shipment type not present.");
         }
-        if (StringUtils.isBlank(shipmentRequest.getTrackingNumber())) {
-            throw new ShipmentException("Tracking number is necessary and should be provided");
-        }
-        if (shipmentRequest.getDriverId() != null) {
-            throw new ShipmentException("driver id is null");
-        }
+
+        // validate tracking number
+        validateTrackingNumber(shipmentRequest.getTrackingNumber());
+
         return shipmentRequest;
     }
 }

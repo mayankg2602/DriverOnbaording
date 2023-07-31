@@ -7,8 +7,8 @@ import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory;
 import io.dropwizard.setup.Bootstrap;
 import org.example.AppConfiguration;
 import org.example.dataModel.*;
-import org.example.manager.*;
-import org.example.manager.interfaces.*;
+import org.example.service.*;
+import org.example.service.interfaces.*;
 import org.example.repository.DocumentRepository;
 import org.example.repository.DriverRepository;
 import org.example.repository.ShipmentRepository;
@@ -25,12 +25,12 @@ import org.hibernate.SessionFactory;
 public class ClientModule implements com.google.inject.Module {
     private final HibernateBundle<AppConfiguration> hibernate = new HibernateBundle<AppConfiguration>(DriverEntity.class,
             DriverProfileEntity.class,
-            DocumentEntity.class,
+            DriverDocumentEntity.class,
             ShipmentEntity.class,
             AvailabilityEntity.class) {
         @Override
         public DataSourceFactory getDataSourceFactory(AppConfiguration configuration) {
-            return configuration.getDatabase();
+            return configuration.getDataSourceFactory();
         }
     };
 
@@ -58,8 +58,8 @@ public class ClientModule implements com.google.inject.Module {
 
     @Provides
     @Singleton
-    public DocumentService getDocumentServiceManager(DriverDocumentValidator documentValidator, DriverRepository driverRepository) {
-        return new DocumentService(documentValidator, driverRepository);
+    public DriverDriverDocumentService getDocumentServiceManager(DriverDocumentValidator documentValidator, DriverRepository driverRepository) {
+        return new DriverDriverDocumentService(documentValidator, driverRepository);
     }
 
     @Provides
@@ -126,7 +126,7 @@ public class ClientModule implements com.google.inject.Module {
     public void configure(Binder binder) {
         binder.bind(IDriverService.class).to(DriverService.class);
         binder.bind(IBackgroundCheckService.class).to(BackgroundCheckService.class);
-        binder.bind(IDocumentService.class).to(DocumentService.class);
+        binder.bind(IDriverDocumentService.class).to(DriverDriverDocumentService.class);
         binder.bind(IDashboardService.class).to(DashboardService.class);
         binder.bind(IShipmentService.class).to(ShipmentService.class);
         binder.bind(IDriverProfileService.class).to(DriverProfileService.class);

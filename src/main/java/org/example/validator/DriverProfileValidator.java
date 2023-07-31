@@ -8,38 +8,39 @@ import org.example.validator.interfaces.IDriverProfileValidator;
 public class DriverProfileValidator implements IDriverProfileValidator {
 
     /**
-     * @param driverId
-     * @return
+     * This method validates the DriverProfileRequest object.
+     * @param driverProfileRequest DriverProfileRequest object to validate.
+     * @return The validated DriverProfileRequest object.
+     * @throws ProfileManagementException if any of the required field information is missing.
      */
     @Override
-    public Long validateDriverId(Long driverId) {
-        if(driverId == null) {
-            throw new ProfileManagementException("driver id is null");
+    public DriverProfileRequest validateDriverProfileRequest(DriverProfileRequest driverProfileRequest) throws ProfileManagementException {
+        // Validate if the driver profile request is not null
+        if (driverProfileRequest == null) {
+            throw new ProfileManagementException("Driver profile request cannot be null.");
         }
-        return driverId;
+
+        // Validate vehicle info
+        validateInfo(driverProfileRequest.getVehicleInfo(), "Vehicle info cannot be null or blank.");
+
+        // Validate license info
+        validateInfo(driverProfileRequest.getLicenseInfo(), "License info cannot be null or blank.");
+
+        // Validate insurance info
+        validateInfo(driverProfileRequest.getInsuranceInfo(), "Insurance info cannot be null or blank.");
+
+        return driverProfileRequest;
     }
 
     /**
-     * @param driverProfileRequest
-     * @return
+     * This method validates if the given info is not blank.
+     * @param info String to validate.
+     * @param errorMessage The error message in case the validation fails.
+     * @throws ProfileManagementException if the info is blank.
      */
-    @Override
-    public DriverProfileRequest validateDriverProfileRequest(DriverProfileRequest driverProfileRequest) {
-        if(driverProfileRequest == null) {
-            throw new ProfileManagementException("request is null");
+    private void validateInfo(String info, String errorMessage) throws ProfileManagementException {
+        if (StringUtils.isBlank(info)) {
+            throw new ProfileManagementException(errorMessage);
         }
-        if(driverProfileRequest.getDriverId() == null) {
-            throw new ProfileManagementException("driver id is null");
-        }
-        if(StringUtils.isBlank(driverProfileRequest.getVehicleInfo())) {
-            throw new ProfileManagementException("vehicle info is null");
-        }
-        if(StringUtils.isBlank(driverProfileRequest.getLicenseInfo())) {
-            throw new ProfileManagementException("license info is null");
-        }
-        if(StringUtils.isBlank(driverProfileRequest.getInsuranceInfo())) {
-            throw new ProfileManagementException("insurance info is null");
-        }
-        return driverProfileRequest;
     }
 }

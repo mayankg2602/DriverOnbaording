@@ -56,6 +56,12 @@
       <version>1.16.8</version>
       <scope>provided</scope>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/javax.validation/validation-api -->
+    <dependency>
+      <groupId>javax.validation</groupId>
+      <artifactId>validation-api</artifactId>
+      <version>2.0.1.Final</version>
+    </dependency>
     <dependency>
       <groupId>io.dropwizard</groupId>
       <artifactId>dropwizard-core</artifactId>
@@ -132,6 +138,18 @@
       <groupId>org.glassfish.jersey.containers</groupId>
       <artifactId>jersey-container-jetty-http</artifactId>
       <version>${jersey.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.core</groupId>
+      <artifactId>jersey-server</artifactId>
+      <version>2.34</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.containers</groupId>
+      <artifactId>jersey-container-servlet-core</artifactId>
+      <version>2.34</version>
+      <scope>test</scope>
     </dependency>
     <!-- https://mvnrepository.com/artifact/org.glassfish.jersey.media/jersey-media-multipart -->
     <dependency>
@@ -314,6 +332,30 @@
             <goals>
               <goal>integration-test</goal>
               <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.iluwatar.urm</groupId>
+        <artifactId>urm-maven-plugin</artifactId>
+        <version>1.4.8</version>
+        <configuration>
+          <outputDirectory>${project.basedir}/target</outputDirectory>
+          <packages>
+            <param>org.example</param>
+          </packages>
+          <ignores>
+          </ignores>
+          <includeMainDirectory>true</includeMainDirectory>
+          <includeTestDirectory>false</includeTestDirectory>
+          <presenter>graphviz</presenter>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>map</goal>
             </goals>
           </execution>
         </executions>

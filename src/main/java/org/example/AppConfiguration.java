@@ -9,10 +9,7 @@ import lombok.EqualsAndHashCode;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
 public class AppConfiguration extends Configuration {
-    private String url;
 
     @Valid
     @NotNull

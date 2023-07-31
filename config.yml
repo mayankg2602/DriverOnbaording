@@ -15,8 +15,8 @@ logging:
     - type: file
       threshold: ALL
       archive: true
-      currentLogFilename: \var\log\driverOnBoarding\service.log
-      archivedLogFilenamePattern: \var\log\driverOnBoarding\service-%i.log.gz
+      currentLogFilename: /var/log/driverOnBoarding/service.log
+      archivedLogFilenamePattern: /var/log/driverOnBoarding/service-%i.log.gz
       archivedFileCount: 4
       timeZone: Asia/Kolkata
       maxFileSize: 500MB

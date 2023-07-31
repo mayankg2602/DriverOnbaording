@@ -1,16 +1,20 @@
 package org.example.dataModel;
 
 import lombok.*;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "availability_entity")
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @AllArgsConstructor
 public class AvailabilityEntity {
 
@@ -30,7 +34,16 @@ public class AvailabilityEntity {
     @Column(name = "updated_at")
     public LocalDateTime updatedAt;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "driver_id")
-    public DriverEntity driverEntity;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        AvailabilityEntity that = (AvailabilityEntity) o;
+        return availabilityId != null && Objects.equals(availabilityId, that.availabilityId);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

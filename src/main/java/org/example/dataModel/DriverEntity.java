@@ -2,15 +2,20 @@ package org.example.dataModel;
 
 import lombok.*;
 import org.example.model.enums.Status;
+import org.hibernate.Hibernate;
+import org.hibernate.validator.constraints.Email;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "driver_entity")
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @AllArgsConstructor
 public class DriverEntity {
 
@@ -23,6 +28,7 @@ public class DriverEntity {
     public String name;
 
     @Column(name = "email", nullable = false, unique = true)
+    @Email
     public String email;
 
     @Column(name = "phone_number", nullable = false)
@@ -41,16 +47,22 @@ public class DriverEntity {
     @Enumerated(EnumType.STRING)
     public Status verificationStatus;
 
-    @OneToOne( mappedBy = "driver", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name="profile_id")
     public DriverProfileEntity profile;
 
-    @OneToMany( mappedBy = "driver", cascade = CascadeType.ALL, orphanRemoval = true)
-    public List<DocumentEntity> documents;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @ToString.Exclude
+    @JoinColumn(name="driver_id")
+    public List<DriverDocumentEntity> documents;
 
-    @OneToMany(mappedBy = "driver", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @ToString.Exclude
+    @JoinColumn(name="driver_id")
     public List<ShipmentEntity> shipments;
 
-    @OneToOne(mappedBy = "driverEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="availability_id")
     public AvailabilityEntity availability;
 
     @Column(name = "created_at", updatable = false)
@@ -59,4 +71,16 @@ public class DriverEntity {
     @Column(name = "updated_at")
     public LocalDateTime updatedAt;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        DriverEntity that = (DriverEntity) o;
+        return driverId != null && Objects.equals(driverId, that.driverId);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

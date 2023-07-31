@@ -3,16 +3,20 @@ package org.example.dataModel;
 import lombok.*;
 import org.example.model.enums.ShipmentStatus;
 import org.example.model.enums.ShipmentType;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "shipment_entity")
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @AllArgsConstructor
 public class ShipmentEntity {
 
@@ -31,7 +35,7 @@ public class ShipmentEntity {
     @Column(name = "order_date", nullable = false)
     public LocalDateTime orderDate;
 
-    @Column(name = "shipment_type", nullable = false)
+    @Column(name = "shipment_type", nullable = false, unique = true)
     @Enumerated(EnumType.STRING)
     public ShipmentType shipmentType;
 
@@ -43,7 +47,16 @@ public class ShipmentEntity {
     @Column(name = "updated_at")
     public LocalDateTime updatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "driver_id")
-    public DriverEntity driver;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        ShipmentEntity that = (ShipmentEntity) o;
+        return shipmentId != null && Objects.equals(shipmentId, that.shipmentId);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

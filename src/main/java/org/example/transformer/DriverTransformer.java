@@ -7,6 +7,12 @@ import org.example.model.request.DriverCreationRequest;
 import java.time.LocalDateTime;
 
 public class DriverTransformer {
+    /**
+     * Transforms a DriverCreationRequest object to a DriverEntity object.
+     *
+     * @param driverCreationRequest The input DriverCreationRequest object.
+     * @return A new DriverEntity object with data from the request.
+     */
     public static DriverEntity transformRequestToEntity(DriverCreationRequest driverCreationRequest) {
         DriverEntity driver = new DriverEntity();
         driver.setAddress(driverCreationRequest.getAddress());
