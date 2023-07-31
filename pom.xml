@@ -98,21 +98,6 @@
       <artifactId>slf4j-api</artifactId>
       <version>${slf4j-api.version}</version>
     </dependency>
-<!--    <dependency>-->
-<!--      <groupId>org.apache.logging.log4j</groupId>-->
-<!--      <artifactId>log4j-api</artifactId>-->
-<!--      <version>${log4j.version}</version>-->
-<!--    </dependency>-->
-<!--    <dependency>-->
-<!--      <groupId>org.apache.logging.log4j</groupId>-->
-<!--      <artifactId>log4j-core</artifactId>-->
-<!--      <version>${log4j.version}</version>-->
-<!--    </dependency>-->
-<!--    <dependency>-->
-<!--      <groupId>org.apache.logging.log4j</groupId>-->
-<!--      <artifactId>log4j-slf4j-impl</artifactId>-->
-<!--      <version>${log4j.version}</version>-->
-<!--    </dependency>-->
     <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
@@ -197,26 +182,6 @@
       <artifactId>jackson-core</artifactId>
       <version>${jackson.version}</version>
     </dependency>
-<!--    <dependency>-->
-<!--      <groupId>ch.qos.logback</groupId>-->
-<!--      <artifactId>logback-core</artifactId>-->
-<!--      <version>1.2.3</version>-->
-<!--    </dependency>-->
-<!--    <dependency>-->
-<!--      <groupId>ch.qos.logback</groupId>-->
-<!--      <artifactId>logback-classic</artifactId>-->
-<!--      <version>1.2.3</version>-->
-<!--      <exclusions>-->
-<!--        <exclusion>-->
-<!--          <groupId>org.apache.logging.log4j</groupId>-->
-<!--          <artifactId>log4j-to-slf4j</artifactId>-->
-<!--        </exclusion>-->
-<!--        <exclusion>-->
-<!--          <groupId>org.apache.logging.log4j</groupId>-->
-<!--          <artifactId>log4j-api</artifactId>-->
-<!--        </exclusion>-->
-<!--      </exclusions>-->
-<!--    </dependency>-->
 
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
